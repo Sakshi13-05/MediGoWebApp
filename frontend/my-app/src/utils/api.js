@@ -1,9 +1,7 @@
-// This sets up a common Axios instance with the backend URL
 import axios from "axios";
 
-// You can configure API base URL (fallback is localhost)
-export const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://medigo-api-j1d7.onrender.com";
-
+// ⚠️ HARDCODE THIS for the interview to ensure it works. 
+// Do not use localhost here.
 export const api = axios.create({
-  baseURL: API_BASE, // All requests will automatically prefix this URL
+  baseURL: "https://medigo-api-j1d7.onrender.com", 
 });
