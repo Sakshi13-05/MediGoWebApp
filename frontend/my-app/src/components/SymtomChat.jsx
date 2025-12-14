@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import {api} from "../utils/api";
 
 export default function SymptomChat() {
   const [messages, setMessages] = useState([]);
@@ -13,7 +13,7 @@ export default function SymptomChat() {
     setInput('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/chat', { message: input });
+      const response = await api.post('/api/chat', { message: input });
       const botReply = response.data.reply;
       setMessages([...newMessages, { sender: 'bot', text: botReply }]);
     } catch (error) {

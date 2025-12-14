@@ -7,7 +7,7 @@ import {api} from "../utils/api";
 import { toast } from "react-toastify";
 import "./ChildrenCard.css";
 
-const API = "http://localhost:5000";
+
 
 function ChildrenCard() {
   const navigate = useNavigate();

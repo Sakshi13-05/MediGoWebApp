@@ -7,7 +7,7 @@ import {api} from "../utils/api";
 import { toast } from "react-toastify";
 import "./MenProductCard.css";
 
-const API = "http://localhost:5000";
+
 
 function MenProductCard() {
   const { id } = useParams();

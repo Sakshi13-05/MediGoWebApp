@@ -21,7 +21,7 @@ function MedicineCard({ user }) {
 
   const handleAddToCart = () => {
     api
-      .post("http://localhost:5000/cart/add", {
+      .post("/cart/add", {
       userId: user?.userId , 
       productId: medicine.id, // ✅ correct key name
       price: medicine.price,
