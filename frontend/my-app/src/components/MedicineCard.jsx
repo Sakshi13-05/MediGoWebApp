@@ -3,7 +3,7 @@ import Medicines from "../data/Medicines.json";
 import { useParams, useNavigate } from "react-router-dom";
 import { GiPriceTag } from "react-icons/gi";
 import { RiDiscountPercentFill } from "react-icons/ri";
-import axios from "axios";
+import {api} from "../utils/api";
 import { toast } from "react-toastify";
 
 import "./MedicineCard.css";
@@ -20,7 +20,7 @@ function MedicineCard({ user }) {
   }
 
   const handleAddToCart = () => {
-    axios
+    api
       .post("http://localhost:5000/cart/add", {
       userId: user?.userId , 
       productId: medicine.id, // ✅ correct key name

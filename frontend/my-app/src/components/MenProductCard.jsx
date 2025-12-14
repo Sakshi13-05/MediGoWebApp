@@ -3,7 +3,7 @@ import MenProducts from "../data/MenProducts.json";
 import { useParams, useNavigate } from "react-router-dom";
 import { GiPriceTag } from "react-icons/gi";
 import { RiDiscountPercentFill } from "react-icons/ri";
-import axios from "axios";
+import {api} from "../utils/api";
 import { toast } from "react-toastify";
 import "./MenProductCard.css";
 
@@ -48,7 +48,7 @@ function MenProductCard() {
 
     try {
       setAdding(true);
-      await axios.post(`${API}/cart/add`, {
+      await api.post(`/cart/add`, {
         userId: user.userId,
         productId: product.id, // keep consistent with backend
         name: product.name,

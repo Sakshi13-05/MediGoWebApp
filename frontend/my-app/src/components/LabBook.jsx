@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FaCommentMedical } from "react-icons/fa";
 import LabTests from "../data/LabTest.json";
 import LabSearch from "./LabSearch";
-import axios from "axios";
+import {api} from "../utils/api";
 
 function LabBook({ user }) {
   const navigate = useNavigate();
@@ -19,8 +19,8 @@ function LabBook({ user }) {
   const handleBooking = (test) => {
     setCart(test);
 
-    axios
-      .post("http://localhost:5000/lab", {
+    api
+      .post("/lab", {
         userId: user.userId,
         testId: test.id,
         testName: test.name,

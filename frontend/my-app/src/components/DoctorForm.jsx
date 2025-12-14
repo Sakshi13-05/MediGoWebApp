@@ -1,6 +1,6 @@
 // src/components/DoctorForm.jsx
 import React, { useState } from "react";
-import axios from "axios";
+import {api} from "../utils/api";
 import emailjs from "@emailjs/browser";
 import "./DoctorForm.css";
 
@@ -29,7 +29,7 @@ function DoctorForm({ onClose }) {
 
     try {
       // 1️⃣ Send data to MongoDB backend
-      await axios.post("http://localhost:5000/consultation", formData);
+      await api.post("/consultation", formData);
 
       // 2️⃣ Send email via EmailJS
       await emailjs.send(

@@ -3,7 +3,7 @@ import ElderProducts from "../data/ElderProducts.json";
 import { useParams, useNavigate } from "react-router-dom";
 import { GiPriceTag } from "react-icons/gi";
 import { RiDiscountPercentFill } from "react-icons/ri";
-import axios from "axios";
+import {api} from "../utils/api";
 import "./ElderProductCard.css"; // Updated CSS
 
 function ElderProductCard({ user }) {
@@ -18,8 +18,8 @@ function ElderProductCard({ user }) {
   }
 
   const handleAddToCart = () => {
-    axios
-      .post("http://localhost:5000/cart/add", {
+    api
+      .post("/cart/add", {
         userId: user.userId,
         id: product.id,
         name: product.name,
