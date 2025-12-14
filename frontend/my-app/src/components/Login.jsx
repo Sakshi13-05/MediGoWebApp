@@ -1,14 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { api } from "../utils/api"; // ✅ Import the Cloud API helper
 import { useNavigate } from "react-router-dom";
-// Ensure you have react-icons installed, or remove the icons if it errors
 import { FaUser, FaLock, FaEnvelope } from "react-icons/fa"; 
 import "./Login.css"; 
 
 function Login({ setUser, closeLogin }) {
-  // State to toggle between Login and Register
   const [isRegistering, setIsRegistering] = useState(false);
-  
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -21,27 +18,25 @@ function Login({ setUser, closeLogin }) {
     e.preventDefault();
     setError("");
 
-    // Decide which URL to hit based on the mode
     const endpoint = isRegistering ? "/register" : "/login";
-    const url = `http://localhost:5000${endpoint}`;
 
     try {
-      const res = await axios.post(url, form);
+      // ✅ CORRECT WAY: Use 'api.post' (It automatically uses the Render URL)
+      const res = await api.post(endpoint, form);
 
       if (isRegistering) {
-        // If Registration successful, switch to login mode automatically
         alert("Registration Successful! Please Login.");
         setIsRegistering(false);
       } else {
-        // If Login successful
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.user));
         setUser(res.data.user);
         closeLogin();
-        navigate("/dashboard"); // Or "/" depending on your routes
+        navigate("/dashboard");
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
+      console.error("Login Error:", err);
+      setError(err.response?.data?.message || "Connection Failed");
     }
   };
 
@@ -52,7 +47,6 @@ function Login({ setUser, closeLogin }) {
         
         {error && <p className="error-msg" style={{color: 'red'}}>{error}</p>}
 
-        {/* Show Name field ONLY if registering */}
         {isRegistering && (
           <div className="input-group">
             <FaUser />
