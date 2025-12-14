@@ -1,7 +1,7 @@
 import "./WomenSection.css";
 import React from "react";
 import Slider from "react-slick";
-import women11 from "../image/women11.png";
+import women11 from "../image/Women11.png";
 import women22 from "../image/women22.png";
 import women33 from "../image/women33.png";
 
