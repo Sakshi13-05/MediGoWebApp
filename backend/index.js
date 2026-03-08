@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { MongoClient, ObjectId } from "mongodb";
+import { MongoClient} from "mongodb";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
