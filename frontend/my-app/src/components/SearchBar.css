@@ -54,3 +54,46 @@
   color: #00b894;
   font-weight: 600;
 }
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .searchbar {
+    padding: 20px;
+    /* Reduced padding for tablets */
+  }
+
+  .searchbar__input-container {
+    width: 85%;
+    /* Make it wider on tablets */
+  }
+
+  .searchbar__input {
+    font-size: 16px;
+    /* Slightly smaller text for tablets */
+    padding: 12px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .searchbar {
+    padding: 15px 10px;
+  }
+
+  .searchbar__input-container {
+    width: 95%;
+    /* Almost full width on phones */
+  }
+
+  .searchbar__input {
+    font-size: 14px;
+    /* Professional size for mobile */
+    padding: 10px;
+  }
+
+  /* Fix the placeholder position for mobile */
+  .searchbar__placeholder {
+    left: 40px;
+    /* Moves it slightly right so it doesn't hit the edge */
+    font-size: 14px;
+  }
+}
