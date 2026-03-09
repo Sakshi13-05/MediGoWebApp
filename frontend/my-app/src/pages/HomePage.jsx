@@ -5,7 +5,7 @@ import SearchBar from '../components/SearchBar';
 import FeatureRow from '../components/FeatureRow';
 import BannerCarousel from '../components/BannerCarousel';
 import TopProducts from '../components/TopProducts';
-
+import Footer from '../components/Footer';
 
 function HomePage() {
   return (
