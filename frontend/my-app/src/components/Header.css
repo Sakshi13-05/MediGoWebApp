@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 30px;
+  padding: 10px 20px;
   background-color: #00b894; /* teal */
   color: white;
   font-family: 'Segoe UI', sans-serif;
@@ -15,7 +15,7 @@
 
 .nav-links {
   display: flex;
-  gap: 20px;
+  gap: 15px;
   align-items: center;
 }
 

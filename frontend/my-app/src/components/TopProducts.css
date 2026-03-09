@@ -1,5 +1,8 @@
 .top-products-section {
-  padding: 40px 0;
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 20px;
+  padding: 20px ;
   background-color: #f9fdfd;
   text-align: center;
 }
@@ -38,12 +41,13 @@
   background-color: #e9f8f5;
   padding: 12px;
   border-radius: 50%;
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   margin: 0 auto 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 10px;
 }
 
 .product-img-container img {
@@ -54,7 +58,7 @@
 
 .product-card h4 {
   font-size: 15px;
-  margin: 8px 0 4px;
+  margin: 5px 0;
   color: #333;
 }
 

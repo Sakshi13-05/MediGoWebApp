@@ -6,8 +6,11 @@
 }
 
 .searchbar__input-container {
+  align-items: center;
+  justify-content: center; /*centers text inside*/
   position: relative;
-  width: 60%;
+  width: 90%;
+  margin :0 auto
 }
 
 .searchbar__input {
@@ -27,7 +30,10 @@
 .searchbar__placeholder {
   position: absolute;
   top: 50%;
-  left: 25%;
+  left: 50%; /*centers it horizontally*/
+  width: 100%;
+  pointer-events: none;
+  text-align: center;
   transform: translate(-50%, -50%);
   font-size: 18px;
   color: #aaa;

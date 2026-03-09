@@ -1,19 +1,20 @@
 .category-nav {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 25px;
   padding: 12px;
   background-color: #dfe6e9;
   font-family: 'Segoe UI', sans-serif;
-  flex-wrap: wrap;
-  text-decoration: none;
   /* Allows wrapping on smaller screens */
+  overflow-x: auto; /*add swipping in mobile*/
+  white-space: nowrap;
 }
 
 .category-item {
   font-weight: 500;
   cursor: pointer;
   transition: color 0.3s;
+  text-decoration: none;
 }
 
 .category-item:hover {
