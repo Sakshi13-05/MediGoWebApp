@@ -6,6 +6,7 @@
   background-color: #dfe6e9;
   font-family: 'Segoe UI', sans-serif;
   flex-wrap: wrap;
+  text-decoration: none;
   /* Allows wrapping on smaller screens */
 }
 
@@ -17,6 +18,7 @@
 
 .category-item:hover {
   color: #00b894;
+  background-color: #f0fff4;
 }
 
 /* Responsive styles */

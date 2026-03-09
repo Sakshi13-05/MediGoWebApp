@@ -154,6 +154,8 @@ function App() {
       </AuthContext.Provider>
     </BrowserRouter>
     
+    // footer
+    
   );
 }
 
