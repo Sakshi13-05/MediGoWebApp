@@ -6,46 +6,36 @@
 }
 
 .searchbar__input-container {
+  position: relative; /* This is the anchor */
+  display: flex;
   align-items: center;
-  justify-content: center; /*centers text inside*/
-  position: relative;
-  width: 90%;
-  margin :0 auto
+  justify-content: center;
+  width: 95%;          /* Takes up most of the screen on mobile */
+  max-width: 600px;    /* Won't get too big on desktop */
+  margin: 20px auto;   /* Centers the whole box on the page */
 }
 
 .searchbar__input {
   width: 100%;
-  padding: 15px 20px;
-  font-size: 18px;
-  font-family: 'Segoe UI', sans-serif;
-  font-style: normal;
+  padding: 15px;
   border: 2px solid #00b894;
-  border-radius: 8px;
-  background-color: white;
-  color: #2d3436;
-  z-index: 2;
-  caret-color: #00b894;
+  border-radius: 12px;
+  outline: none;
+  text-align: center; /* Centers the blinking cursor when you type */
 }
 
 .searchbar__placeholder {
   position: absolute;
+  left: 50%;
   top: 50%;
-  left: 50%; /*centers it horizontally*/
+  transform: translate(-50%, -50%); 
+  /* --------------------- */
   width: 100%;
-  pointer-events: none;
   text-align: center;
-  transform: translate(-50%, -50%);
-  font-size: 18px;
-  color: #aaa;
-  pointer-events: none;
-  z-index: 3;
-  font-family: 'Segoe UI', sans-serif;
-  font-style: normal;
-  font-weight: normal;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: opacity 0.3s ease-in-out;
+  pointer-events: none; /* Allows you to click "through" the text to the input */
+  color: #999;
+  font-size: 16px;
+  white-space: nowrap;  /* Keeps it in one line */
 }
 
 .searchbar__placeholder--visible {
@@ -58,7 +48,7 @@
 
 .searchbar__try-text {
   color: #00b894;
-  font-weight: 600;
+  font-weight: bold;
 }
 
 /* Responsive styles */
