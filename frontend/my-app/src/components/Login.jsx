@@ -3,7 +3,7 @@ import { api } from "../utils/api"; // ✅ Import the Cloud API helper
 import { useNavigate } from "react-router-dom";
 import { FaUser, FaLock, FaEnvelope } from "react-icons/fa"; 
 import "./Login.css"; 
-import toast from 'react-toastify'
+import {toast} from 'react-toastify'
 
 function Login({ setUser, closeLogin }) {
   const [isRegistering, setIsRegistering] = useState(false);
