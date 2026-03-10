@@ -11,9 +11,9 @@ function SearchBar() {
     "Sanitizer"
   ];
 
-  const [index, setIndex] = useState(0);
+  const [, setIndex] = useState(0);
   const [inputValue, setInputValue] = useState('');
-  const [fade, setFade] = useState(true);
+  const [, setFade] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -36,9 +36,10 @@ function SearchBar() {
       className="searchbar__input"
     />
     {inputValue === '' && (
-      <div className={`searchbar__placeholder ${fade ? 'searchbar__placeholder--visible' : 'searchbar__placeholder--hidden'}`}>
-        What are you looking for? <span className="searchbar__try-text">Try <strong>{hints[index]}</strong></span>
-      </div>
+      <div className="searchbar__placeholder" 
+     style={{ opacity: inputValue ? 0 : 1 }}>
+  What are you looking for? <span className="searchbar__try-text">Try Face Mask</span>
+</div>
     )}
   </div>
 </div>

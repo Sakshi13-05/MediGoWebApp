@@ -51,45 +51,44 @@
   font-weight: bold;
 }
 
-/* Responsive styles */
-@media (max-width: 768px) {
-  .searchbar {
-    padding: 20px;
-    /* Reduced padding for tablets */
-  }
-
+/* --- TABLET (768px and below) --- */
+@media screen and (max-width: 768px) {
   .searchbar__input-container {
-    width: 85%;
-    /* Make it wider on tablets */
+    width: 85%; /* Expand to fill tablet screen */
+    margin: 30px auto;
   }
 
   .searchbar__input {
+    padding: 14px 15px;
     font-size: 16px;
-    /* Slightly smaller text for tablets */
-    padding: 12px 15px;
+  }
+
+  .searchbar__placeholder {
+    font-size: 16px;
   }
 }
 
-@media (max-width: 480px) {
-  .searchbar {
-    padding: 15px 10px;
-  }
-
+/* --- MOBILE (480px and below) --- */
+@media screen and (max-width: 480px) {
   .searchbar__input-container {
-    width: 95%;
-    /* Almost full width on phones */
+    width: 92%; /* Almost full width for phones */
+    margin: 20px auto;
   }
 
   .searchbar__input {
+    padding: 12px 10px;
     font-size: 14px;
-    /* Professional size for mobile */
-    padding: 10px;
+    border-width: 1.5px; /* Thinner border looks better on small screens */
   }
 
-  /* Fix the placeholder position for mobile */
   .searchbar__placeholder {
-    left: 40px;
-    /* Moves it slightly right so it doesn't hit the edge */
-    font-size: 14px;
+    font-size: 13px; /* Smaller text so it doesn't wrap or clip */
+    white-space: nowrap; /* Forces text to stay in one line */
+  }
+
+  /* Optional: Hide the "What are you looking for?" 
+     and only show "Try Face Mask" to save space on very tiny phones */
+  .searchbar__placeholder span {
+    display: inline;
   }
 }
