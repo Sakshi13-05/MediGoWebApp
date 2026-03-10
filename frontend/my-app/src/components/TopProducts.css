@@ -1,10 +1,7 @@
 .top-products-section {
-  display: grid;
-  grid-template-columns: repeat(2,1fr);
-  gap: 20px;
-  padding: 20px ;
+  padding: 40px 20px;
   background-color: #f9fdfd;
-  text-align: center;
+  text-align: center; /* Centers the Title */
 }
 
 .section-title {
@@ -15,21 +12,23 @@
 }
 
 .products-grid {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  flex-wrap: wrap;
-  padding: 0 20px;
+  display: grid;
+  /* This 'repeat(auto-fit...)' is a Pro-Tip: 
+     It makes it 4 per row on Desktop, 2 on Tablet, 1 on Mobile automatically */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+  gap: 25px;
+  max-width: 1200px;
+  margin: 0 auto; /* Centers the whole grid */
+  padding: 20px;
 }
 
 .product-card {
-  width: 180px;
+  width: 100%; /* Let the grid control the size */
   background: #ffffff;
   border-radius: 16px;
   padding: 20px 15px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.08);
   transition: all 0.3s ease;
-  cursor: pointer;
 }
 
 .product-card:hover {
@@ -47,14 +46,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
+  transition: all 0.3s ease;
 }
 
-.product-img-container img {
-  width: 50px;
-  height: 50px;
-  object-fit: contain;
+.product-card:hover .product-img-container {
+  background-color: #d1f2eb;
+  transform: scale(1.05);
 }
+
 
 .product-card h4 {
   font-size: 15px;

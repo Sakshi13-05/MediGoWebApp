@@ -10,7 +10,7 @@ import Footer from '../components/Footer';
 function HomePage() {
   return (
     <div>
-      2wsxcdewsdxcf3wsdxcf3waszxcf32qAZ<SearchBar />
+      <SearchBar />
       <FeatureRow/>
       <BannerCarousel />
       <TopProducts />

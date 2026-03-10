@@ -1,28 +1,31 @@
 import React from 'react';
+import { Pill, Bottle, Droplet, ShieldCheck } from 'lucide-react';
 import './TopProducts.css';
+
 
 const products = [
   {
     name: 'Paracetamol 500mg',
     price: '₹25',
-    image: 'https://cdn-icons-png.flaticon.com/512/2921/2921822.png', // medicine
+    icon: <Pill size={42} color="#00b894" strokeWidth={1.5} />,
   },
   {
     name: 'Multivitamin Capsules',
     price: '₹130',
-    image: 'https://cdn-icons-png.flaticon.com/512/686/686589.png', // capsule
+    icon: <Bottle size={42} color="#00b894" strokeWidth={1.5} />,
   },
   {
     name: 'Cough Syrup',
     price: '₹95',
-    image: 'https://cdn-icons-png.flaticon.com/512/798/798231.png', // syrup
+    icon: <Droplet size={42} color="#00b894" strokeWidth={1.5} />,
   },
   {
     name: 'Hand Sanitizer',
     price: '₹60',
-    image: 'https://cdn-icons-png.flaticon.com/512/4825/4825071.png', // sanitizer
+    icon: <ShieldCheck size={42} color="#00b894" strokeWidth={1.5} />,
   },
 ];
+
 
 function TopProducts() {
   return (
@@ -32,7 +35,7 @@ function TopProducts() {
         {products.map((product, index) => (
           <div className="product-card" key={index}>
             <div className="product-img-container">
-              <img src={product.image} alt={product.name} />
+              {product.icon}
             </div>
             <h4>{product.name}</h4>
             <p>{product.price}</p>
@@ -45,3 +48,4 @@ function TopProducts() {
 }
 
 export default TopProducts;
+
