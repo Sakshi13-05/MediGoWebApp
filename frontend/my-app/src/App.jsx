@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import {ToastContainer}  from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import toast from "react-toastify"
 
 import Header from "./components/Header";
 import CategoryNav from "./components/CategoryNav";
@@ -49,12 +50,16 @@ function App() {
   
 
   useEffect(() => {
-    const loggedUser = localStorage.getItem("user");
-    if (loggedUser) {
-      setUser(JSON.parse(loggedUser));
+    // Check if user info exists in localStorage on startup
+    const savedUser = localStorage.getItem("user");
+    const savedToken = localStorage.getItem("token");
+
+    if (savedUser && savedToken) {
+      setUser(JSON.parse(savedUser));
     }
-    
   }, []);
+
+  
 
   return (
     <BrowserRouter>
@@ -66,9 +71,11 @@ function App() {
     document.body.classList.add("noscroll");
   }}
   user={user}
-  logout={() => {
+  handleLogout={() => {
+    localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
+    toast.info("Logged out successfully");
   }}
 
 />

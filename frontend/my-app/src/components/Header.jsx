@@ -3,7 +3,7 @@ import { BiSolidLogInCircle } from "react-icons/bi";
 import { FaCartArrowDown } from "react-icons/fa6";
 import "./Header.css";
 
-function Header({ openLogin, user, logout }) {
+function Header({ openLogin, user, handleLogout }) {
   return (
     <header className="header">
       <div className="logo">MediGo</div>
@@ -14,7 +14,7 @@ function Header({ openLogin, user, logout }) {
             <span><BiSolidLogInCircle /> Welcome, {user.name}</span>
             <Link to="/cart">Cart</Link>
             <span className="offers">Offers</span>
-            <button className="logout-btn" onClick={logout}>Logout</button>
+            <button className="logout-btn" onClick={handleLogout}>Logout</button>
           </>
         ) : (
           <>
@@ -22,7 +22,12 @@ function Header({ openLogin, user, logout }) {
             <Link to="/cart"><FaCartArrowDown /> Cart</Link>
             <span className="offers">Offers</span>
           </>
+          
         )}
+        <div className="cart-icon">
+     <FaShoppingCart />
+     <span className="cart-count">0</span>
+  </div>
       </nav>
     </header>
   );

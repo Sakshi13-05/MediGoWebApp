@@ -3,11 +3,13 @@ import { api } from "../utils/api"; // ✅ Import the Cloud API helper
 import { useNavigate } from "react-router-dom";
 import { FaUser, FaLock, FaEnvelope } from "react-icons/fa"; 
 import "./Login.css"; 
+import toast from 'react-toastify'
 
 function Login({ setUser, closeLogin }) {
   const [isRegistering, setIsRegistering] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
+  const [loading,setLoading]=useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -18,26 +20,36 @@ function Login({ setUser, closeLogin }) {
     e.preventDefault();
     setError("");
 
-    const endpoint = isRegistering ? "/register" : "/login";
-
-    try {
-      // ✅ CORRECT WAY: Use 'api.post' (It automatically uses the Render URL)
-      const res = await api.post(endpoint, form);
-
-      if (isRegistering) {
-        alert("Registration Successful! Please Login.");
-        setIsRegistering(false);
-      } else {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("user", JSON.stringify(res.data.user));
-        setUser(res.data.user);
-        closeLogin();
-        navigate("/dashboard");
-      }
-    } catch (err) {
-      console.error("Login Error:", err);
-      setError(err.response?.data?.message || "Connection Failed");
+    // 1.basic Validation
+    if(!form.email || !form.password){
+      return toast.error("Please fill all the details");
     }
+    setLoading(true);
+    const endpoint=isRegistering? "/register":"/login"
+    try{
+        const res=await api.post(endpoint,form);
+
+        if(isRegistering){
+          console.log(res);
+          toast.success("Registration Successful!!")
+          setIsRegistering(false);
+        }else{
+          setUser(res.data.user);
+          toast.success(`Welcome Back,${res.data.user.name}`);
+          closeLogin();
+          navigate("/");
+        }
+    }catch(e){
+        const errMsg=e.response?.data?.message || "Server Error. Try again Later";
+        toast.error(errMsg);
+        setError(errMsg);
+    }finally{
+      setLoading(false);
+    }
+
+    
+
+   
   };
 
   return (
@@ -73,9 +85,9 @@ function Login({ setUser, closeLogin }) {
           />
         </div>
 
-        <button type="submit">
-          {isRegistering ? "Register" : "Login"}
-        </button>
+        <button type="submit" disabled={loading}>
+            {loading ? <FaSpinner className="spinner" /> : (isRegistering ? "Register" : "Login")}
+          </button>
 
         <p className="toggle-text" style={{marginTop: "10px", cursor: "pointer", color: "blue"}}>
           <span onClick={() => setIsRegistering(!isRegistering)}>
