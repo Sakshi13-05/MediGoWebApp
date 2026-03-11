@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { BiSolidLogInCircle } from "react-icons/bi";
-import { FaCartArrowDown } from "react-icons/fa6";
+import { FaCartArrowDown ,FaShoppingCart} from "react-icons/fa6";
 import "./Header.css";
 
 function Header({ openLogin, user, handleLogout }) {
