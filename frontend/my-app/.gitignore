@@ -25,6 +25,7 @@ dist-ssr
 .envcd
 
 backend/node_modules/
+.env
 frontend/node_modules/
 .env
 .DS_Store
