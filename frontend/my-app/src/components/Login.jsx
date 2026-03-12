@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { api } from "../utils/api"; // ✅ Import the Cloud API helper
 import { useNavigate } from "react-router-dom";
-import { FaUser, FaLock, FaEnvelope } from "react-icons/fa"; 
+import { FaUser, FaLock, FaEnvelope ,FaSpinner} from "react-icons/fa"; 
 import "./Login.css"; 
 import {toast} from 'react-toastify'
 

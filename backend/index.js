@@ -13,7 +13,7 @@ dotenv.config();
 // ==========================================
 // 1. CONFIGURATION & DATABASE CONNECTION
 // ==========================================
-const MONGO_URL = process.env.MONGO_URL || "mongodb+srv://sakshi:sakshi123@cluster0.86yrmn2.mongodb.net/MediGo?appName=Cluster0";
+const MONGO_URL = process.env.MONGO_URL || "mongodb+srv://sakshi:Sak13@31@cluster0.86yrmn2.mongodb.net/";
 const DB_NAME = process.env.DB_NAME || "MediGo";
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = "sakshi_super_secret_key_123"; 
