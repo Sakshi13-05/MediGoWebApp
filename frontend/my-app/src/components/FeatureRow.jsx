@@ -43,7 +43,7 @@ function FeatureRow() {
   };
 
   return (
-    <div className="feature-row-wrapper">
+    <div className="feature-row-wrapper reveal">
       <div className="feature-row">
         {features.map((item, index) => (
           <div

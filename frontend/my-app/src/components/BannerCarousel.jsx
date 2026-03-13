@@ -25,7 +25,7 @@ function BannerCarousel() {
   
 
   return (
-    <div className="banner-wrapper">
+    <div className="banner-wrapper reveal">
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         navigation

@@ -27,13 +27,14 @@ const products = [
 
 function TopProducts() {
   return (
-    <div className="top-products-section">
+    <div className="top-products-section reveal">
       <h2 className="section-title">Top Products</h2>
       <div className="products-grid">
         {products.map((product, index) => {
           const Icon = product.icon;
           return (
             <div className="product-card" key={index}>
+
               <div className="product-img-container">
                 <Icon size={42} color="#00b894" strokeWidth={1.5} />
               </div>

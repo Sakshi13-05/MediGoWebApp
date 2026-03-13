@@ -1,8 +1,10 @@
 .banner-wrapper {
   width: 100%;
   max-width: 1200px;
-  margin: 20px auto;
+  margin: 40px auto;
+  border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow: var(--card-shadow);
 }
 
 .banner-swiper {
@@ -11,49 +13,48 @@
 
 .banner-slide {
   position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
 }
 
 .banner-img {
   width: 100%;
-  height: auto;
-  max-height: 150px; /* Keeps it short like PharmEasy */
-  object-fit: contain; /* Shows full image */
+  height: 250px;
+  object-fit: cover;
   display: block;
-  border-radius: 8px;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.banner-slide:hover .banner-img {
+  transform: scale(1.05);
 }
 
 .banner-text {
   position: absolute;
-  bottom: 10px;
-  left: 16px;
-  color: white;
-  font-size: 18px;
-  font-weight: 600;
-  background-color: rgba(0, 0, 0, 0.4);
-  padding: 6px 12px;
-  border-radius: 6px;
-  max-width: 90%;
+  bottom: 24px;
+  left: 24px;
+  color: var(--white);
+  font-size: 24px;
+  font-weight: 700;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 12px 24px;
+  border-radius: 12px;
+  max-width: 80%;
+  font-family: var(--font-heading);
+  letter-spacing: -0.5px;
 }
 
-/* Responsive styles */
 @media (max-width: 768px) {
   .banner-img {
-    max-height: 120px; /* Reduce banner height */
+    height: 180px;
   }
   .banner-text {
-    font-size: 16px;
-    padding: 5px 10px;
+    font-size: 18px;
+    padding: 8px 16px;
+    bottom: 16px;
+    left: 16px;
   }
 }
 
-@media (max-width: 480px) {
-  .banner-img {
-    max-height: 100px;
-  }
-  .banner-text {
-    font-size: 14px;
-    padding: 4px 8px;
-    bottom: 6px;
-    left: 10px;
-  }
-}
