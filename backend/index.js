@@ -236,6 +236,42 @@ app.post("/lab", async (req, res) => {
   }
 });
 
+// ➤ FETCH PRODUCTS BY CATEGORY (NEW)
+app.get("/products/:category", async (req, res) => {
+  try {
+    const { category } = req.params;
+    const collection = getCollection("medicines"); // All products seeded here in seed.js
+    const products = await collection.find({ category }).toArray();
+    res.json(products);
+  } catch (err) {
+    console.error(`Error fetching products for ${req.params.category}:`, err);
+    res.status(500).json({ message: "Error fetching data from database" });
+  }
+});
+
+// ➤ FETCH SINGLE PRODUCT BY ID (NEW)
+app.get("/product/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const collection = getCollection("medicines");
+    const product = await collection.findOne({ id: parseInt(id) }); // Assuming 'id' is a numeric field from seed
+    
+    if (!product) {
+       // Also try matching MongoDB _id if it's a string
+       try {
+         const { ObjectId } = (await import('mongodb')).default;
+         const pById = await collection.findOne({ _id: new ObjectId(id) });
+         if (pById) return res.json(pById);
+       } catch (e) {}
+       return res.status(404).json({ message: "Product not found" });
+    }
+    res.json(product);
+  } catch (err) {
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+
 // ==========================================
 // 4. START SERVER
 // ==========================================

@@ -1,51 +1,67 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Women from "../data/Women.json";
+import { FaSpinner } from "react-icons/fa";
+import { api } from "../utils/api";
 import "./WomenCat.css";
-import { GiPriceTag } from "react-icons/gi";
-import { RiDiscountPercentFill } from "react-icons/ri";
 
 function WomenCat() {
   const { category } = useParams();
   const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const filterProd = Women.filter((pro) => pro.category === category);
+  useEffect(() => {
+    const fetchWomenProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get(`/products/${category}`);
+        setProducts(response.data);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching women's products:", err);
+        setError("Failed to load products. Please check your connection.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWomenProducts();
+  }, [category]);
+
+  if (loading) return (
+    <div className="loading-container">
+      <FaSpinner className="spinner" />
+      <p>Loading products...</p>
+    </div>
+  );
+
+  if (error) return <div className="error-container">{error}</div>;
 
   return (
-    <div className="women-page">
-      <h2>Products for {category}</h2>
-
-      {filterProd.length === 0 ? (
-        <p>No products found for this category.</p>
+    <div className="women-category-page">
+      <h2>{category.replace(/-/g, " ")}</h2>
+      {products.length === 0 ? (
+        <p className="no-products">No products found in this category.</p>
       ) : (
-        <div className="women-list">
-          {filterProd.map((pro, idx) => (
+        <div className="women-product-grid">
+          {products.map((product) => (
             <div
-              key={idx}
-              className="women-card"
-              onClick={() => navigate(`/women/details/${pro.id}`)}
+              key={product._id || product.id}
+              className="women-product-card"
+              onClick={() => navigate(`/women/details/${product.id || product._id}`)}
               style={{ cursor: "pointer" }}
             >
-              <img src={pro.image} alt={pro.name} />
-              <h4>{pro.name}</h4>
-              <p>Chemical Name: {pro.chemicalName}</p>
-              <p>{pro.details}</p>
-              <p>
-                <b>
-                  <span>
-                    <GiPriceTag />
-                  </span>
-                  Price:
-                </b>{" "}
-                ₹{pro.price} &nbsp;
-                <span className="mrp">MRP: ₹{pro.mrp}</span>
-              </p>
-              <p className="discount">
-                <span>
-                  <RiDiscountPercentFill />
-                </span>
-                {pro.discount}%
-              </p>
+              <img src={product.image} alt={product.name} />
+              <h4>{product.name}</h4>
+              <p className="description">{product.description || product.details}</p>
+              <div className="price-info">
+                <span className="price">₹{product.price}</span>
+                {product.mrp && <span className="mrp">₹{product.mrp}</span>}
+              </div>
+              {product.discount && (
+                <p className="discount-badge">{product.discount} OFF</p>
+              )}
             </div>
           ))}
         </div>

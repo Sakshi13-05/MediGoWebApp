@@ -6,14 +6,14 @@ import lab2 from "../image/lab2.png";
 import lab3 from "../image/lab3.png";
 import HealthPackages from "../components/HealthPackages";
 
-import LabBook from "../components/LabBook";    
+import LabSearch from "../components/LabSearch";
 import { useNavigate } from "react-router-dom";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 function LabTest() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const settings = {
     dots: true,
     infinite: true,
@@ -27,7 +27,7 @@ function LabTest() {
 
   return (
     <div className="lab-section">
-      
+
       {/* Carousel Section */}
       <Slider {...settings} className="carousel">
         <div className="carousel-card">
@@ -41,11 +41,11 @@ function LabTest() {
         </div>
       </Slider>
 
-       <div className="lab-buttons">
-        <button onClick={()=>{navigate("/test")}}>🧪 All Tests</button>
+      <div className="lab-buttons">
+        <button onClick={() => { navigate("/test") }}>🧪 All Tests</button>
         <button>❤️ Health Packages</button>
-        
-        
+
+
       </div>
 
       {/* Promotional Strip */}

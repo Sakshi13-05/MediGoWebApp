@@ -1,33 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./LabBook.css";
 import { useNavigate } from "react-router-dom";
-import { FaCommentMedical } from "react-icons/fa";
-import LabTests from "../data/LabTest.json";
+import { FaCommentMedical, FaSpinner } from "react-icons/fa";
 import LabSearch from "./LabSearch";
-import {api} from "../utils/api";
+import { api } from "../utils/api";
 
 function LabBook({ user }) {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [cart, setCart] = useState(null);
-  
+  const [labTests, setLabTests] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const filteredTests = LabTests.filter((test) =>
+  useEffect(() => {
+    const fetchTests = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get("/products/LabTest");
+        setLabTests(response.data);
+        setError(null);
+      } catch (err) {
+        console.error("Failed to fetch lab tests:", err);
+        setError("Unable to load tests. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTests();
+  }, []);
+
+
+  const filteredTests = labTests.filter((test) =>
     test.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleBooking = (test) => {
+    if (!user) {
+      alert("Please login to book a test");
+      return;
+    }
     setCart(test);
 
     api
       .post("/lab", {
         userId: user.userId,
-        testId: test.id,
+        testId: test.id || test._id,
         testName: test.name,
         price: test.price,
-        fasting: test.fasting,
-        reportTime: test.reportTime,
-        includes: test.includes || ""
+        fasting: test.fasting || "No fasting required",
+        reportTime: test.reportTime || "24 hours",
+        includes: test.description || test.includes || ""
       })
       .then((res) => {
         alert("Test added to cart!");
@@ -39,35 +63,45 @@ function LabBook({ user }) {
       });
   };
 
+  if (loading) return (
+    <div className="loading-container">
+      <FaSpinner className="spinner" />
+      <p>Fetching Lab Tests...</p>
+    </div>
+  );
+
+  if (error) return <div className="error-container">{error}</div>;
+
   return (
     <>
-      <LabSearch setSearchTerm={setSearchTerm} suggestions={LabTests} />
+      <LabSearch setSearchTerm={setSearchTerm} suggestions={labTests} />
       <div className="lab-booking-container">
         <div className="tests-section">
           <h2><FaCommentMedical /> Book Your Lab And Blood Tests Online</h2>
           {filteredTests.length > 0 ? (
             filteredTests.map((test) => (
               <div
-                key={test.id}
-                className={`test-card ${
-                  cart && cart.id === test.id ? "selected" : ""
-                }`}
+                key={test._id || test.id}
+                className={`test-card ${cart && (cart._id === test._id || cart.id === test.id) ? "selected" : ""
+                  }`}
               >
                 <div className="test-details">
                   <h3>{test.name}</h3>
-                  {test.includes && <p className="includes">{test.includes}</p>}
+                  {(test.description || test.includes) && (
+                    <p className="includes">{test.description || test.includes}</p>
+                  )}
                   <div className="price-section">
                     <span className="price">₹{test.price}</span>
-                    <span className="mrp">₹{test.mrp}</span>
-                    <span className="discount">{test.discount}</span>
+                    {test.mrp && <span className="mrp">₹{test.mrp}</span>}
+                    {test.discount && <span className="discount">{test.discount}</span>}
                   </div>
                   <div className="info-section">
-                    <span>🧪 {test.fasting}</span>
-                    <span>📄 {test.reportTime}</span>
+                    <span>🧪 {test.fasting || "N/A"}</span>
+                    <span>📄 {test.reportTime || "Same Day"}</span>
                   </div>
                 </div>
                 <button className="book-btn" onClick={() => handleBooking(test)}>
-                  {cart && cart.id === test.id ? "Booked" : "Book"}
+                  {cart && (cart._id === test._id || cart.id === test.id) ? "Booked" : "Book"}
                 </button>
               </div>
             ))
@@ -84,14 +118,14 @@ function LabBook({ user }) {
               <p>Price: ₹{cart.price}</p>
               <p>{cart.fasting}</p>
               <p>{cart.reportTime}</p>
-              {cart.includes && <p>{cart.includes}</p>}
-              <button 
+              {(cart.description || cart.includes) && <p>{cart.description || cart.includes}</p>}
+              <button
                 onClick={() => {
-    navigate("/view", { state: { bookingDetails: cart } });
-  }} 
-               
-              className="view-cart-btn"
-          >View Cart</button>
+                  navigate("/view", { state: { bookingDetails: cart } });
+                }}
+
+                className="view-cart-btn"
+              >View Cart</button>
             </>
           ) : (
             <>
@@ -106,3 +140,4 @@ function LabBook({ user }) {
 }
 
 export default LabBook;
+
