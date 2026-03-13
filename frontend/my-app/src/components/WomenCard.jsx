@@ -1,38 +1,59 @@
-import React, { useMemo, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { GiPriceTag } from "react-icons/gi";
 import { RiDiscountPercentFill } from "react-icons/ri";
+import { FaSpinner } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { api } from "../utils/api";
-import Women from "../data/Women.json";
 import "./WomenCard.css";
 
 function WomenCard() {
-  
   const { id } = useParams();
   const navigate = useNavigate();
+  const [product, setProduct] = useState(null);
+  const [similarProducts, setSimilarProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
 
-  
-  const product = useMemo(() => Women.find((p) => p.id === Number(id)), [id]);
+  useEffect(() => {
+    const fetchProductData = async () => {
+      try {
+        setLoading(true);
+        const res = await api.get(`/product/${id}`);
+        setProduct(res.data);
 
-  
-  const getFinalPrice = (mrp, discount = 0) =>
-    Math.round(mrp * (1 - discount / 100));
+        if (res.data.category) {
+          const similarRes = await api.get(`/products/${res.data.category}`);
+          setSimilarProducts(
+            similarRes.data.filter((p) => (p.id || p._id).toString() !== id.toString())
+          );
+        }
+      } catch (err) {
+        console.error("Error fetching product:", err);
+        toast.error("Product not found");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProductData();
+  }, [id]);
 
-  
-  const similarProducts = useMemo(() => {
-    if (!product) return [];
-    return Women.filter(
-      (p) => p.category === product.category && p.id !== product.id
-    );
-  }, [product]);
+  const getFinalPrice = (mrp, discount = 0) => {
+    const disc = typeof discount === 'string' ? parseInt(discount) : discount;
+    return Math.round(mrp * (1 - (disc || 0) / 100));
+  };
 
-  
-  if (!product) return <div>Product not found</div>;
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center min-h-[400px]">
+      <FaSpinner className="animate-spin text-4xl text-teal-600 mb-4" />
+      <p>Loading product details...</p>
+    </div>
+  );
+
+  if (!product) return <div className="text-center py-20">Product not found</div>;
 
   const basePrice = product.mrp ?? product.price ?? 0;
-  const discountPct = product.discount ?? 0;
+  const discountPct = product.discount ? (typeof product.discount === 'string' ? parseInt(product.discount) : product.discount) : 0;
   const dealPrice = getFinalPrice(basePrice, discountPct);
   const saved = Math.round(basePrice - dealPrice);
 
@@ -48,16 +69,16 @@ function WomenCard() {
       setAdding(true);
       await api.post("/cart/add", {
         userId: user.userId,
-        productId: product.id,
+        productId: product.id || product._id,
         name: product.name,
-        price: dealPrice, 
+        price: dealPrice,
         image: product.image,
         quantity: 1,
       });
       toast.success(`${product.name} added to cart!`);
     } catch (err) {
       console.error("Error adding to cart:", err);
-      toast.error(err.response?.data?.message || "Error adding to cart.");
+      toast.error("Error adding to cart.");
     } finally {
       setAdding(false);
     }
@@ -72,10 +93,10 @@ function WomenCard() {
 
         <div className="women-info">
           <p>
-            <b>Chemical Name:</b> {product.chemicalName}
+            <b>Chemical Name:</b> {product.chemicalName || "N/A"}
           </p>
           <p>
-            <b>Details:</b> {product.details}
+            <b>Details:</b> {product.details || product.description}
           </p>
 
           <div className="price-block">
@@ -104,22 +125,22 @@ function WomenCard() {
         <>
           <h3>Recommended for You</h3>
           <div className="women-recommendation-list">
-            {similarProducts.map((pro) => {
+            {similarProducts.slice(0, 4).map((pro) => {
               const recBase = pro.mrp ?? pro.price ?? 0;
-              const recDiscount = pro.discount ?? 0;
-              const recFinal = getFinalPrice(recBase, recDiscount);
+              const recDisc = pro.discount ? (typeof pro.discount === 'string' ? parseInt(pro.discount) : pro.discount) : 0;
+              const recFinal = getFinalPrice(recBase, recDisc);
 
               return (
                 <div
-                  key={pro.id}
+                  key={pro._id || pro.id}
                   className="women-recommendation-card"
-                  onClick={() => navigate(`/women/details/${pro.id}`)}
+                  onClick={() => navigate(`/women/details/${pro.id || pro._id}`)}
                 >
                   <img src={pro.image} alt={pro.name} />
                   <h4>{pro.name}</h4>
                   <p>
                     ₹{recFinal}{" "}
-                    {recDiscount > 0 && (
+                    {recDisc > 0 && (
                       <span className="mrp-strike">₹{recBase}</span>
                     )}
                   </p>
@@ -134,3 +155,4 @@ function WomenCard() {
 }
 
 export default WomenCard;
+

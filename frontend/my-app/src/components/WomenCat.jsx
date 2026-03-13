@@ -42,7 +42,7 @@ function WomenCat() {
     <div className="women-category-page">
       <h2>{category.replace(/-/g, " ")}</h2>
       {products.length === 0 ? (
-        <p className="no-products">No products found in this category.</p>
+        <p className="no-products text-center py-10">No data available in this category.</p>
       ) : (
         <div className="women-product-grid">
           {products.map((product) => (

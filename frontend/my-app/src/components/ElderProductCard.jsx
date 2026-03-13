@@ -1,46 +1,78 @@
-import React, { useState } from "react";
-import ElderProducts from "../data/ElderProducts.json";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { GiPriceTag } from "react-icons/gi";
 import { RiDiscountPercentFill } from "react-icons/ri";
-import {api} from "../utils/api";
-import "./ElderProductCard.css"; // Updated CSS
+import { api } from "../utils/api";
+import { FaSpinner } from "react-icons/fa";
+import { toast } from "react-toastify";
+import "./ElderProductCard.css";
 
 function ElderProductCard({ user }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [, setItemAdded] = useState(false);
+  const [product, setProduct] = useState(null);
+  const [similarProducts, setSimilarProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [adding, setAdding] = useState(false);
 
-  const product = ElderProducts.find((prod) => prod.id === parseInt(id));
+  useEffect(() => {
+    const fetchProductData = async () => {
+      try {
+        setLoading(true);
+        const res = await api.get(`/product/${id}`);
+        setProduct(res.data);
 
-  if (!product) {
-    return <div>Product not found</div>;
-  }
+        if (res.data.category) {
+          const similarRes = await api.get(`/products/${res.data.category}`);
+          setSimilarProducts(
+            similarRes.data.filter((p) => (p.id || p._id).toString() !== id.toString())
+          );
+        }
+      } catch (err) {
+        console.error("Error fetching elder product:", err);
+        toast.error("Product not found");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProductData();
+  }, [id]);
+
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center min-h-[400px]">
+      <FaSpinner className="animate-spin text-4xl text-teal-600 mb-4" />
+      <p>Loading product details...</p>
+    </div>
+  );
+
+  if (!product) return <div className="text-center py-20">Product not found</div>;
 
   const handleAddToCart = () => {
+    if (!user) {
+      toast.warn("Please log in to add items to your cart.");
+      navigate("/login");
+      return;
+    }
+
+    setAdding(true);
     api
       .post("/cart/add", {
         userId: user.userId,
-        id: product.id,
+        productId: product.id || product._id,
         name: product.name,
         price: product.price,
         image: product.image,
         quantity: 1,
       })
       .then((response) => {
-        console.log("Item added to cart:", response.data);
-        alert("Item added to cart successfully!");
-        setItemAdded(true);
+        toast.success(`${product.name} added to cart!`);
       })
       .catch((error) => {
         console.error("Error adding to cart:", error);
-        alert("Failed to add to cart. Please try again.");
-      });
+        toast.error("Failed to add to cart.");
+      })
+      .finally(() => setAdding(false));
   };
-
-  const similarProducts = ElderProducts.filter(
-    (item) => item.category === product.category && item.id !== product.id
-  );
 
   return (
     <div className="elder-detail-page">
@@ -50,17 +82,19 @@ function ElderProductCard({ user }) {
         <img src={product.image} alt={product.name} />
 
         <div className="elder-info">
-          <p><b>Chemical Name:</b> {product.chemicalName}</p>
-          <p><b>Details:</b> {product.details}</p>
+          <p><b>Chemical Name:</b> {product.chemicalName || "N/A"}</p>
+          <p><b>Details:</b> {product.details || product.description}</p>
           <p className="price-block">
             <b><GiPriceTag /> Price:</b> ₹{product.price} &nbsp;
-            <span className="mrp">MRP: ₹{product.mrp}</span>
+            {product.mrp && <span className="mrp">MRP: ₹{product.mrp}</span>}
           </p>
           <p className="discount">
             <RiDiscountPercentFill /> {product.discount}
           </p>
           <div className="button-group">
-            <button onClick={handleAddToCart}>Quick Add</button>
+            <button onClick={handleAddToCart} disabled={adding}>
+              {adding ? "Adding..." : "Quick Add"}
+            </button>
             <button onClick={() => navigate("/cart")}>View My Cart</button>
           </div>
         </div>
@@ -68,11 +102,11 @@ function ElderProductCard({ user }) {
 
       <h3>Recommended for You</h3>
       <div className="recommendation-list">
-        {similarProducts.map((item) => (
+        {similarProducts.slice(0, 4).map((item) => (
           <div
-            key={item.id}
+            key={item._id || item.id}
             className="recommendation-card"
-            onClick={() => navigate(`/elder/details/${item.id}`)}
+            onClick={() => navigate(`/elder/details/${item.id || item._id}`)}
             style={{ cursor: "pointer" }}
           >
             <img src={item.image} alt={item.name} />
@@ -86,3 +120,4 @@ function ElderProductCard({ user }) {
 }
 
 export default ElderProductCard;
+
