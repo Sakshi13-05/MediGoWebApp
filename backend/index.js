@@ -4,7 +4,7 @@ import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import authRoutes from "./routes/authRoutes"
+import authRoutes from "./routes/authRoutes.js"
 
 const app = express();
 app.use(express.json());
