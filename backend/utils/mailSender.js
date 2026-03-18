@@ -1,14 +1,16 @@
-import nodemailer from 'nodemailer'
-const sendEmail=async(email,otp)=>{
-    try{
-        const transporter=nodemailer.createTransport({
-            service:'gmail',
-            auth:{
-                user:process.env.EMAIL_USER,
-                pass:process.env.EMAIL_PASS
-            }
-        });
-        const mailOptions = {
+import nodemailer from 'nodemailer';
+
+// Use "export const" for a named export
+export const sendEmail = async (email, otp) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+    const mailOptions = {
       from: '"MediGo Healthcare" <no-reply@medigo.com>',
       to: email,
       subject: "MediGo Verification Code",
@@ -22,11 +24,11 @@ const sendEmail=async(email,otp)=>{
       `,
     };
     await transporter.sendMail(mailOptions);
-    console.log("email send to ",email);
+    console.log("email send to ", email);
 
-    }catch(err){
-        console.error(err);
-        throw new err("failed to send email")
-    }
+  } catch (err) {
+    console.error(err);
+    throw new err("failed to send email")
+  }
 }
 export default sendEmail;
