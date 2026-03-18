@@ -33,9 +33,13 @@ function MedicineCat() {
   }, [category]);
 
   if (loading) return (
-    <div className="loading-container">
-      <FaSpinner className="spinner" />
-      <p>Finding the best medicines for you...</p>
+    <div className="medicine-page">
+      <h2>Loading products...</h2>
+      <div className="medicine-list">
+        {[1, 2, 3, 4].map((n) => (
+          <div key={n} className="medicine-card groww-card skeleton" style={{ height: '300px', opacity: 0.6 }}></div>
+        ))}
+      </div>
     </div>
   );
 

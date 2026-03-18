@@ -30,9 +30,13 @@ function WomenCat() {
   }, [category]);
 
   if (loading) return (
-    <div className="loading-container">
-      <FaSpinner className="spinner" />
-      <p>Loading products...</p>
+    <div className="women-category-page">
+      <h2>Loading products...</h2>
+      <div className="women-product-grid">
+        {[1, 2, 3, 4].map((n) => (
+          <div key={n} className="women-product-card groww-card skeleton" style={{ height: '300px', opacity: 0.6 }}></div>
+        ))}
+      </div>
     </div>
   );
 

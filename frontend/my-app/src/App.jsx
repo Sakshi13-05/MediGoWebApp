@@ -1,44 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import {ToastContainer}  from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {toast} from "react-toastify"
 
 import Header from "./components/Header";
 import CategoryNav from "./components/CategoryNav";
-import Login from "./components/Login";
-
-import LabTest from "./pages/LabTest";
-import LabBook from "./components/LabBook";
+import AuthModal from "./components/AuthModal";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import HomePage from "./pages/HomePage";
+import Dashboard from "./pages/Dashboard";
 import MedicinePage from "./pages/MedicinePage";
 import DoctorPage from "./pages/DoctorPage";
 import HealthcarePage from "./pages/HealthcarePage";
 import CartPage from "./pages/CartPage";
 import ViewBooking from "./pages/ViewBooking";
-
+import LabTest from "./pages/LabTest";
+import LabBook from "./components/LabBook";
 
 import MedicineCat from "./components/MedicineCat";
 import MedicineCard from "./components/MedicineCard";
-
-
 import Women from "./pages/Women";
 import WomenCat from "./components/WomenCat";
 import WomenCard from "./components/WomenCard";
-
-
 import Children from "./pages/Children";
 import ChildrenCat from "./components/ChildrenCat";
 import ChildrenCard from "./components/ChildrenCard";
-
-
-// 🧔 Men Section
 import MenPage from "./pages/MenPage";
 import MenCategory from "./components/MenCategory";
 import MenProductCard from "./components/MenProductCard";
-
-// 👴 Elder Section
 import ElderPage from "./pages/ElderPage";
 import ElderCategory from "./components/ElderCategory";
 import ElderProductCard from "./components/ElderProductCard";
@@ -46,143 +36,110 @@ import ElderProductCard from "./components/ElderProductCard";
 function App() {
   const [showLogin, setShowLogin] = useState(false);
   const [user, setUser] = useState(null);
-  const AuthContext = React.createContext();
-  
 
   useEffect(() => {
-    // Check if user info exists in localStorage on startup
     const savedUser = localStorage.getItem("user");
     const savedToken = localStorage.getItem("token");
-
     if (savedUser && savedToken) {
       setUser(JSON.parse(savedUser));
     }
 
     // Scroll Reveal Observer
-    const observerOptions = {
-      threshold: 0.15,
-      rootMargin: "0px 0px -50px 0px"
-    };
-
+    const observerOptions = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("active");
-        }
+        if (entry.isIntersecting) entry.target.classList.add("active");
       });
     }, observerOptions);
 
     const revealElements = document.querySelectorAll(".reveal");
     revealElements.forEach((el) => observer.observe(el));
-
     return () => observer.disconnect();
   }, []);
 
-
-  
-
-  return (
-    <BrowserRouter>
-      <AuthContext.Provider value={{ user, setUser }}>
-        <Header
-          
-  openLogin={() => {
-    setShowLogin(true);
-    document.body.classList.add("noscroll");
-  }}
-  user={user}
-  handleLogout={() => {
+  const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
     toast.info("Logged out successfully");
-  }}
+  };
 
-/>
-          
-        <CategoryNav />
-
-        <div className={`page-content ${showLogin ? "blurred" : ""}`}>
-          <Routes>
-            {/* 🏠 Home */}
-            <Route path="/" element={<HomePage />} />
-
-            {/* 💊 Medicine */}
-            <Route path="/medicine" element={<MedicinePage />} />
-            <Route path="/medicine/category/:category" element={<MedicineCat />} />
-            <Route path="/medicine/details/:id" element={<MedicineCard user={user} />} />
-
-            {/* 👩 Women */}
-            <Route path="/women" element={<Women />} />
-            <Route path="/women/category/:category" element={<WomenCat />} />
-            <Route path="/women/details/:id" element={<WomenCard user={user} />} />
-
-            {/* 👶 Children */}
-            <Route path="/child" element={<Children />} />
-            <Route path="/child/category/:category" element={<ChildrenCat />} />
-            <Route path="/child/details/:id" element={<ChildrenCard user={user} />} />
-
-            {/* 🧔 Men */}
-            <Route path="/men" element={<MenPage />} />
-            <Route path="/men/category/:category" element={<MenCategory />} />
-            <Route path="/men/details/:id" element={<MenProductCard user={user} />} />
-
-            {/* 👴 Elder */}
-            <Route path="/elder" element={<ElderPage />} />
-            <Route path="/elder/category/:category" element={<ElderCategory />} />
-            <Route path="/elder/details/:id" element={<ElderProductCard user={user} />} />
-
-            {/* 👨‍⚕️ Others */}
-            <Route path="/doctor-consult" element={<DoctorPage user={user} />} />
-            <Route path="/healthcare" element={<HealthcarePage user={user} />} />
-
-            <Route path="/lab-tests" element={<LabTest/>} />
-            <Route path="/test" element={<LabBook user={user}/>} />
-
-            <Route path="/offers" element={<div>Offers Page</div>} />
-            <Route path="/cart" element={<CartPage user={user}/>} />
-            <Route path="/view" element={<ViewBooking user={user}/>} />
-
-            {/* 🔄 Redirects */}
-            <Route path="/pages/Men" element={<Navigate to="/men" />} />
-            <Route path="/pages/Elder" element={<Navigate to="/elder" />} />
-          </Routes>
-           <ToastContainer position="top-right" autoClose={2000} />
-        </div>
-      
-
-      {/* Login Popup */}
-      {showLogin && (
-  <div className="login-overlay">
-    <div className="login-wing">
-      <button
-        className="close-btn"
-        onClick={() => {
-          setShowLogin(false);
-          document.body.classList.remove("noscroll");
-        }}
-      >
-        X
-      </button>
-      <Login
-        setUser={(userData) => {
-          setUser(userData);
-          localStorage.setItem("user", JSON.stringify(userData));
-        }}
-        closeLogin={() => {
-          setShowLogin(false);
-          document.body.classList.remove("noscroll");
-        }}
+  return (
+    <BrowserRouter>
+      <Header
+        openLogin={() => setShowLogin(true)}
+        user={user}
+        handleLogout={handleLogout}
       />
-    </div>
-  </div>
-)}
+      
+      <CategoryNav />
 
-      </AuthContext.Provider>
+      <div className={`page-content ${showLogin ? "blurred" : ""}`}>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={user ? <Navigate to="/dashboard" /> : <HomePage />} />
+          
+          {/* Protected Routes */}
+          <Route path="/dashboard" element={
+            <ProtectedRoute user={user}>
+              <Dashboard user={user} />
+            </ProtectedRoute>
+          } />
+
+          {/* Medicine */}
+          <Route path="/medicine" element={<MedicinePage />} />
+          <Route path="/medicine/category/:category" element={<MedicineCat />} />
+          <Route path="/medicine/details/:id" element={<MedicineCard user={user} />} />
+
+          {/* Women */}
+          <Route path="/women" element={<Women />} />
+          <Route path="/women/category/:category" element={<WomenCat />} />
+          <Route path="/women/details/:id" element={<WomenCard user={user} />} />
+
+          {/* Children */}
+          <Route path="/child" element={<Children />} />
+          <Route path="/child/category/:category" element={<ChildrenCat />} />
+          <Route path="/child/details/:id" element={<ChildrenCard user={user} />} />
+
+          {/* Men */}
+          <Route path="/men" element={<MenPage />} />
+          <Route path="/men/category/:category" element={<MenCategory />} />
+          <Route path="/men/details/:id" element={<MenProductCard user={user} />} />
+
+          {/* Elder */}
+          <Route path="/elder" element={<ElderPage />} />
+          <Route path="/elder/category/:category" element={<ElderCategory />} />
+          <Route path="/elder/details/:id" element={<ElderProductCard user={user} />} />
+
+          {/* Others */}
+          <Route path="/doctor-consult" element={<DoctorPage user={user} />} />
+          <Route path="/healthcare" element={<HealthcarePage user={user} />} />
+          <Route path="/lab-tests" element={<LabTest/>} />
+          <Route path="/test" element={<LabBook user={user}/>} />
+          
+          <Route path="/cart" element={
+            <ProtectedRoute user={user}>
+              <CartPage user={user}/>
+            </ProtectedRoute>
+          } />
+          <Route path="/view" element={
+            <ProtectedRoute user={user}>
+              <ViewBooking user={user}/>
+            </ProtectedRoute>
+          } />
+
+          {/* Redirects */}
+          <Route path="/login" element={<Navigate to={user ? "/dashboard" : "/"} />} />
+        </Routes>
+        <ToastContainer position="top-right" autoClose={2000} />
+      </div>
+
+      <AuthModal 
+        isOpen={showLogin} 
+        onClose={() => setShowLogin(false)} 
+        setUser={setUser} 
+      />
     </BrowserRouter>
-    
-    // footer
-    
   );
 }
 

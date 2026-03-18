@@ -6,6 +6,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import authRoutes from "./routes/authRoutes.js"
 
+import mongoose from "mongoose";
+
 const app = express();
 app.use(express.json());
 
@@ -22,9 +24,15 @@ const DB_NAME = process.env.DB_NAME
 
 // Ensure your CORS uses the env variable
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
   credentials: true
 }));
+
+// Connect Mongoose
+mongoose.connect(MONGO_URI)
+  .then(() => console.log("✅ Mongoose connected successfully"))
+  .catch(err => console.error("❌ Mongoose connection error:", err));
+
 app.use('/api/auth', authRoutes);
 
 let db;
