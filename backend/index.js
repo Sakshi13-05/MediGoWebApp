@@ -8,20 +8,21 @@ import jwt from "jsonwebtoken";
 const app = express();
 app.use(express.json());
 
-app.use(cors({
-  origin: ["https://medi-go-web-app-azdf.vercel.app", "http://localhost:5173"],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  credentials: true
-}));
+
 dotenv.config();
 
 // ==========================================
 // 1. CONFIGURATION & DATABASE CONNECTION
 // ==========================================
-const MONGO_URL = process.env.MONGO_URL || "mongodb+srv://sakshi:Sak13@31@cluster0.86yrmn2.mongodb.net/?appName=Cluster0";
-const DB_NAME = process.env.DB_NAME || "MediGo";
+const MONGO_URI = process.env.MONGO_URI;
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = "sakshi_super_secret_key_123";
+const JWT_SECRET = process.env.JWT_SECRET;
+
+// Ensure your CORS uses the env variable
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true
+}));
 
 let db;
 const getCollection = (name) => db.collection(name);
@@ -282,7 +283,7 @@ app.get("/product/:id", async (req, res) => {
 // ==========================================
 (async function start() {
   try {
-    const client = new MongoClient(MONGO_URL);
+    const client = new MongoClient(MONGO_URI);
     await client.connect();
     db = client.db(DB_NAME);
     console.log(`✅ Connected to MongoDB (${DB_NAME})`);
