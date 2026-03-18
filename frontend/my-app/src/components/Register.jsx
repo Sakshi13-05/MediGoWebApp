@@ -1,67 +1,83 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import {api} from "../utils/api"
+import { api } from "../utils/api";
+import { FiMail, FiUser, FiLock, FiCheckCircle } from "react-icons/fi";
 
-function Register(){
-    const[email,setEmail]=useState("");
-    const[otp,setOtp] =useState("");
-    const[isEmailVerified,setIsEmailVerified]=useState(false);
-    const[step,setStep]=useState(1);
-    // 1.email 2.enter otp 3.Full form
-    const [loading,setLoading]=useState(false);
-    
+function Register() {
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [password, setPassword] = useState("");
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [step, setStep] = useState(1);
+  // 1.email 2.enter otp 3.Full form
+  const [loading, setLoading] = useState(false);
 
-    // Step1--send otp to gmail
-    const handleSendOtp=async()=>{
-        setLoading(true);
-        try{
-            await api.post("/auth/send-otp",{email});
-            setStep(2);
-            toast.success("Verification code send to your email");
-
-        }catch(err){
-            toast.error("Failed to send OTP.Check your connection.")
-            console.log(err);
-        }finally{
-            setLoading(false);
-        }
+  // Step1--send otp to gmail
+  const handleSendOtp = async () => {
+    setLoading(true);
+    try {
+      await api.post("/auth/send-otp", { email });
+      setStep(2);
+      toast.success("Verification code sent to your email");
+    } catch (err) {
+      toast.error("Failed to send OTP. Check your connection.");
+      console.log(err);
+    } finally {
+      setLoading(false);
     }
-    // verify the code
-    const handleVerifyOtp=async()=>{
-        try{
-            const res=await api.post("/auth/verify-otp",{email,otp});
-            if(res.data.success){
-                setIsEmailVerified(true);
-                setStep(3)
-                toast.success("Email is verified sucessfully!!")
-            }
-        }catch(err){
-            console.log("Invalid OYP.Please try it again");
-            console.log(err);
-        }
+  };
+
+  // verify the code
+  const handleVerifyOtp = async () => {
+    try {
+      const res = await api.post("/auth/verify-otp", { email, otp });
+      if (res.data.success) {
+        setIsEmailVerified(true);
+        setStep(3);
+        toast.success("Email verified successfully!");
+      }
+    } catch (err) {
+      toast.error("Invalid OTP. Please try again.");
+      console.log(err);
     }
-    
-    return(
+  };
+
+  const isValidEmail = email.includes("@") && email.includes(".");
+
+  return (
     <div className="register-container">
       <h2>Create Account</h2>
 
-      {/* --- EMAIL SECTION --- */}
+      {/* --- STEP 1: EMAIL SECTION --- */}
       <div className="input-group">
         <label>Email Id*</label>
-        <div className="input-row">
+        <div className="input-row" style={{ position: "relative" }}>
+          <FiMail className="input-icon" style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#666" }} />
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
             disabled={isEmailVerified} // Lock email once verified
+            style={{ paddingLeft: "35px", width: "100%", paddingRight: "80px", boxSizing: "border-box" }}
           />
-          {email.includes("@") && !isEmailVerified && step === 1 && (
-            <button className="verify-btn" type="button" onClick={handleSendOtp}>
+          {isValidEmail && !isEmailVerified && step === 1 && (
+            <button
+              className="verify-btn"
+              type="button"
+              onClick={handleSendOtp}
+              style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)" }}
+              disabled={loading}
+            >
               {loading ? "..." : "Verify"}
             </button>
           )}
-          {isEmailVerified && <span className="verified-icon">✅ Verified</span>}
+          {isEmailVerified && (
+            <span className="verified-icon" style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", color: "#10b981", display: "flex", alignItems: "center", gap: "4px" }}>
+              <FiCheckCircle /> Verified
+            </span>
+          )}
         </div>
       </div>
 
@@ -69,13 +85,19 @@ function Register(){
       {step === 2 && (
         <div className="otp-section">
           <p>Please enter the 6-digit code sent to your email</p>
-          <input
-            type="text"
-            placeholder="000000"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-          />
-          <button onClick={handleVerifyOtp}>Submit OTP</button>
+          <div className="input-row" style={{ display: "flex", gap: "10px" }}>
+            <input
+              type="text"
+              placeholder="000000"
+              value={otp}
+              maxLength={6}
+              onChange={(e) => setOtp(e.target.value)}
+              style={{ letterSpacing: "2px", textAlign: "center", flex: 1 }}
+            />
+            <button className="submit-main-btn" onClick={handleVerifyOtp} style={{ whiteSpace: "nowrap", margin: 0 }}>
+              Submit OTP
+            </button>
+          </div>
         </div>
       )}
 
@@ -84,14 +106,33 @@ function Register(){
         <div className="full-form-animation">
           <div className="input-group">
             <label>Full Name*</label>
-            <input type="text" placeholder="As per official ID" />
+            <div className="input-row" style={{ position: "relative" }}>
+              <FiUser className="input-icon" style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#666" }} />
+              <input 
+                type="text" 
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="As per official ID" 
+                style={{ paddingLeft: "35px", width: "100%", boxSizing: "border-box" }}
+              />
+            </div>
           </div>
           <div className="input-group">
-            <label>Mobile Number*</label>
-            <input type="text" placeholder="+91 Enter mobile number" />
+            <label>Password*</label>
+            <div className="input-row" style={{ position: "relative" }}>
+              <FiLock className="input-icon" style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#666" }} />
+              <input 
+                type="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Create a strong password" 
+                style={{ paddingLeft: "35px", width: "100%", boxSizing: "border-box" }}
+              />
+            </div>
           </div>
-          {/* Add your State and Category dropdowns here */}
-          <button className="submit-main-btn">Register</button>
+          <button className="submit-main-btn" style={{ width: "100%", marginTop: "15px" }}>
+            Complete Registration
+          </button>
         </div>
       )}
     </div>
