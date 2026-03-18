@@ -67,10 +67,22 @@ function Register() {
               className="verify-btn"
               type="button"
               onClick={handleSendOtp}
-              style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)" }}
+              style={{
+                position: "absolute",
+                right: "15px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                background: "none",
+                border: "none",
+                color: "#10b981",
+                textDecoration: "underline",
+                fontWeight: "600",
+                cursor: "pointer",
+                padding: 0,
+              }}
               disabled={loading}
             >
-              {loading ? "..." : "Verify"}
+              {loading ? "Sending..." : "Verify"}
             </button>
           )}
           {isEmailVerified && (

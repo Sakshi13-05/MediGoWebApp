@@ -1,13 +1,18 @@
 import express from "express";
 import cors from "cors";
-import { MongoClient} from "mongodb";
+import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+
+app.use(cors({
+  origin: ["https://medi-go-web-app-azdf.vercel.app", "http://localhost:5173"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true
+}));
 dotenv.config();
 
 // ==========================================
@@ -16,9 +21,9 @@ dotenv.config();
 const MONGO_URL = process.env.MONGO_URL || "mongodb+srv://sakshi:Sak13@31@cluster0.86yrmn2.mongodb.net/?appName=Cluster0";
 const DB_NAME = process.env.DB_NAME || "MediGo";
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = "sakshi_super_secret_key_123"; 
+const JWT_SECRET = "sakshi_super_secret_key_123";
 
-let db; 
+let db;
 const getCollection = (name) => db.collection(name);
 const toNumber = (v) => (typeof v === "string" ? Number(v) : v);
 
@@ -46,11 +51,11 @@ app.post("/register", async (req, res) => {
     const newUser = {
       name,
       email,
-      password: hashedPassword, 
+      password: hashedPassword,
       type: type || "user",
       createdAt: new Date(),
     };
-    
+
     const result = await users.insertOne(newUser);
     res.status(201).json({ message: "User registered successfully", userId: result.insertedId });
 
@@ -80,8 +85,8 @@ app.post("/login", async (req, res) => {
 
     // Generate Token
     const token = jwt.sign(
-      { id: user._id, type: user.type }, 
-      JWT_SECRET, 
+      { id: user._id, type: user.type },
+      JWT_SECRET,
       { expiresIn: "1h" }
     );
 
@@ -255,15 +260,15 @@ app.get("/product/:id", async (req, res) => {
     const { id } = req.params;
     const collection = getCollection("medicines");
     const product = await collection.findOne({ id: parseInt(id) }); // Assuming 'id' is a numeric field from seed
-    
+
     if (!product) {
-       // Also try matching MongoDB _id if it's a string
-       try {
-         const { ObjectId } = (await import('mongodb')).default;
-         const pById = await collection.findOne({ _id: new ObjectId(id) });
-         if (pById) return res.json(pById);
-       } catch (e) {}
-       return res.status(404).json({ message: "Product not found" });
+      // Also try matching MongoDB _id if it's a string
+      try {
+        const { ObjectId } = (await import('mongodb')).default;
+        const pById = await collection.findOne({ _id: new ObjectId(id) });
+        if (pById) return res.json(pById);
+      } catch (e) { }
+      return res.status(404).json({ message: "Product not found" });
     }
     res.json(product);
   } catch (err) {
