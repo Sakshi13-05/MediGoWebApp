@@ -17,6 +17,7 @@ dotenv.config();
 const MONGO_URI = process.env.MONGO_URI;
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET;
+const DB_NAME = process.env.DB_NAME
 
 // Ensure your CORS uses the env variable
 app.use(cors({
