@@ -4,6 +4,7 @@ import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import authRoutes from "./routes/authRoutes"
 
 const app = express();
 app.use(express.json());
@@ -24,6 +25,7 @@ app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials: true
 }));
+app.use('/api/auth', authRoutes);
 
 let db;
 const getCollection = (name) => db.collection(name);
