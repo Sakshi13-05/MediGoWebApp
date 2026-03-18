@@ -1,6 +1,6 @@
 import Otp from "../models/Otp.js";
 import User from "../models/User.js";
-import { sendEmail } from "../utils/mailSender";
+import { sendEmail } from "../utils/mailSender.js";
 
 // handles when back button is clicked
 export const requestOTP = async () => {
