@@ -13,32 +13,64 @@ const generateToken = (user) => {
 
 // 1. Request OTP Logic
 export const requestOTP = async (req, res) => {
+  console.log("📥 RECEIVED OTP REQUEST:", req.body);
   const { email } = req.body;
 
-  if (!email) return res.status(400).json({ message: "Email is required" });
+  if (!email) {
+    console.warn("⚠️ OTP Request failed: Email is missing in req.body");
+    return res.status(400).json({ 
+      success: false, 
+      message: "Email is required in the request body" 
+    });
+  }
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
   try {
-    // Upsert OTP (Expires in 5 mins - handled by TTL index if exists, otherwise manual check)
-    await Otp.findOneAndUpdate({ email }, { otp, createdAt: new Date() }, { upsert: true, new: true });
+    console.log(`💾 DB: Attempting to save/update OTP for ${email}`);
+    // Upsert OTP (Expires in 5 mins - handled by TTL index)
+    const otpRecord = await Otp.findOneAndUpdate(
+      { email }, 
+      { otp, createdAt: new Date() }, 
+      { upsert: true, new: true }
+    );
+    console.log("✅ DB: OTP record updated successfully:", otpRecord._id);
 
+    console.log("📧 EMAIL: Triggering sendEmail utility...");
     // Send the actual email
     await sendEmail(email, otp);
+    console.log("✅ EMAIL: sendEmail completed successfully");
 
+    console.log("👤 USER: Checking if user exists for redirect logic...");
     const user = await User.findOne({ email });
+    const isNewUser = !user;
+    console.log(`ℹ️ USER: User is ${isNewUser ? 'NEW' : 'EXISTING'}`);
 
     res.status(200).json({
       success: true,
-      isNewUser: !user,
+      isNewUser,
       message: "OTP sent successfully to email"
     });
 
   } catch (err) {
-    console.error("OTP Request Error:", err);
-    res.status(500).json({ success: false, message: "Failed to send OTP" });
+    console.error("🔥 CRITICAL 500 ERROR IN requestOTP:");
+    console.error("- Error Name:", err.name);
+    console.error("- Error Message:", err.message);
+    if (err.stack) console.error("- Stack Trace:", err.stack);
+
+    // Differentiate between config/external errors and coding errors
+    const errorMessage = err.message.includes("Email") 
+      ? "Failed to process email delivery. Please check server logs." 
+      : "Internal Server Error in OTP generation.";
+
+    res.status(500).json({ 
+      success: false, 
+      message: errorMessage,
+      details: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
   }
 };
+
 
 // 2. Verify OTP Logic
 export const verifyOTP = async (req, res) => {
