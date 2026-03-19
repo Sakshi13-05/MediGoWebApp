@@ -130,6 +130,7 @@ function App() {
 
           {/* Redirects */}
           <Route path="/login" element={<Navigate to={user ? "/dashboard" : "/"} />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
         <ToastContainer position="top-right" autoClose={2000} />
       </div>
