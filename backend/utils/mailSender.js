@@ -24,9 +24,8 @@ export const sendEmail = async (email, otp) => {
         // Prevents failure on cloud providers like Render/Google
         rejectUnauthorized: false
       },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 10000,
+      family: 4,
+      connectionTimeout: 15000,
     });
 
     // Verification step
