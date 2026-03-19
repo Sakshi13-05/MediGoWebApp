@@ -3,8 +3,10 @@ import nodemailer from 'nodemailer';
 export const sendEmail = async (email, otp) => {
   console.log("📨 Attempting to send OTP email to:", email);
   
-  // Audit Env Variables
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+  // Ensure EMAIL_PASS is a continuous string (trim spaces if any from env)
+  const password = process.env.EMAIL_PASS?.replace(/\s+/g, '');
+
+  if (!process.env.EMAIL_USER || !password) {
     console.error("❌ CRITICAL: EMAIL_USER or EMAIL_PASS environment variables are missing.");
     throw new Error("Server configuration error: Email credentials not found.");
   }
@@ -13,21 +15,23 @@ export const sendEmail = async (email, otp) => {
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
-      secure: true, // Use SSL for port 465
+      secure: true, // Use SSL
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS, // This MUST be an App Password, not a regular password
+        pass: password, // MUST be a continuous 16-char App Password
       },
-      // Higher timeout for Render's potential network latency
+      tls: {
+        // Prevents failure on cloud providers like Render/Google
+        rejectUnauthorized: false
+      },
       connectionTimeout: 10000, 
       greetingTimeout: 10000,
       socketTimeout: 10000,
     });
 
-    // Verification step to catch connection issues early
-    console.log("🔍 Verifying SMTP transporter...");
+    // Verification step
     await transporter.verify();
-    console.log("✅ Transporter is ready to send messages");
+    console.log("✅ Transporter verified and ready");
 
     const mailOptions = {
       from: `"MediGo Healthcare" <${process.env.EMAIL_USER}>`,
@@ -47,21 +51,16 @@ export const sendEmail = async (email, otp) => {
       `,
     };
 
-    console.log("📤 Sending mail...");
     const info = await transporter.sendMail(mailOptions);
-    console.log("✅ Email sent successfully! MessageId:", info.messageId);
+    console.log("✅ Email sent successfully! ID:", info.messageId);
 
   } catch (error) {
     console.error("❌ NODEMAILER ERROR DETECTED:");
-    console.error("- Message:", error.message);
-    console.error("- Code:", error.code);
-    console.error("- Command:", error.command);
-    // Log whole object for Render logs
-    console.dir(error, { depth: null });
+    console.dir(error, { depth: null }); // Comprehensive log for Render
     
     if (error.code === 'EAUTH') {
-      throw new Error("Email Authentication Failed: Ensure you are using a GMAIL APP PASSWORD, not your regular password.");
+      throw new Error("Authentication Failed: Verify your GMAIL APP PASSWORD.");
     }
     throw new Error(`Email delivery failed: ${error.message}`);
   }
-};
+};

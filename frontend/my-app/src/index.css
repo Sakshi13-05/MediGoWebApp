@@ -137,4 +137,49 @@ button {
   transform: translateY(0);
 }
 
+/* Primary Button */
+.btn-primary {
+  background-color: var(--primary-green);
+  color: #FFF;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 208, 156, 0.25);
+  transition: var(--transition);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 208, 156, 0.35);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  background-color: #BDC3C7;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Page Transitions Wrapper */
+.page-content {
+  min-height: calc(100vh - 72px);
+  padding-bottom: 80px;
+}
+
+.blurred {
+  filter: blur(8px);
+  padding: 0 20px;
+  pointer-events: none;
+}
+
 
