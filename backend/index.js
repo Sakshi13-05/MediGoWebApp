@@ -5,8 +5,8 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import authRoutes from "./routes/authRoutes.js";
-import Medicine from "./models/Medicine.js"; // Import your Mongoose models
-import User from "./models/User.js";
+import Medicine from "./models/Medicines.js"; // Import your Mongoose models
+
 
 const app = express();
 
