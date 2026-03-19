@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 
 export const sendEmail = async (email, otp) => {
   console.log("📨 Attempting to send OTP email to:", email);
-  
+
   // Ensure EMAIL_PASS is a continuous string (trim spaces if any from env)
   const password = process.env.EMAIL_PASS?.replace(/\s+/g, '');
 
@@ -14,7 +14,7 @@ export const sendEmail = async (email, otp) => {
   try {
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
-      port: 465,
+      port: 587,
       secure: true, // Use SSL
       auth: {
         user: process.env.EMAIL_USER,
@@ -24,7 +24,7 @@ export const sendEmail = async (email, otp) => {
         // Prevents failure on cloud providers like Render/Google
         rejectUnauthorized: false
       },
-      connectionTimeout: 10000, 
+      connectionTimeout: 10000,
       greetingTimeout: 10000,
       socketTimeout: 10000,
     });
@@ -57,7 +57,7 @@ export const sendEmail = async (email, otp) => {
   } catch (error) {
     console.error("❌ NODEMAILER ERROR DETECTED:");
     console.dir(error, { depth: null }); // Comprehensive log for Render
-    
+
     if (error.code === 'EAUTH') {
       throw new Error("Authentication Failed: Verify your GMAIL APP PASSWORD.");
     }
